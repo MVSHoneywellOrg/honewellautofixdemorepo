@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 
-# --- Vulnerable: Hardcoded secret key ---
+## --- Vulnerable: Hardcoded secret key ---
 app.secret_key = "mySuperSecretKey123"
 
 # --- Vulnerable: No authentication on DB connection ---
