@@ -24,12 +24,23 @@ def search():
     conn.close()
     return str(result)
 
+# Allowlist of permissible system commands
+ALLOWED_COMMANDS = {
+    "date": "date",
+    "uptime": "uptime",
+    "whoami": "whoami"
+}
+
 @app.route("/rce")
 def rce():
-    # --- Vulnerable: Remote Code Execution ---
-    cmd = request.args.get("cmd")
-    output = os.popen(cmd).read()  # ❌ executes arbitrary commands
-    return f"<pre>{output}</pre>"
+    cmd_key = request.args.get("cmd")
+    # Only allow execution of commands in the allowlist
+    if cmd_key in ALLOWED_COMMANDS:
+        safe_cmd = ALLOWED_COMMANDS[cmd_key]
+        output = os.popen(safe_cmd).read()
+        return f"<pre>{output}</pre>"
+    else:
+        return "<pre>Error: Invalid command.</pre>", 400
 
 @app.route("/xss")
 def xss():
